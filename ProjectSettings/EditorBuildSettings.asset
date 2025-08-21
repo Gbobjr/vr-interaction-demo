@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/myscene test.unity
+    guid: b46fe1ac8a3ece74db81a23e13b9e243
+  - enabled: 1
     path: "Assets/Samples/Meta XR Interaction \u200BSDK/77.0.0/Example Scenes/HandGrabExamples.unity"
     guid: 39ae0e546b9edc0408d3b11c6a7c2814
   - enabled: 1
