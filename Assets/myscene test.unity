@@ -6957,6 +6957,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::mono
   myRigidBody: {fileID: 678676144}
+  cubeX: {fileID: 1581233180}
 --- !u!54 &678676144
 Rigidbody:
   m_ObjectHideFlags: 0
