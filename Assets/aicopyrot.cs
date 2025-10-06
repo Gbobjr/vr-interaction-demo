@@ -6,9 +6,16 @@ public class ApplyRotationAsVelocity : MonoBehaviour
     public Rigidbody targetRigidbody; // The object to which velocity will be applied
     public Rigidbody JoyHeadRotate; // A separate Rigidbody for rotation
     public float movementSpeed = 10f; // The speed at which the target object will move
+    public Animator animator; // A separate Rigidbody for rotation
 
     void FixedUpdate()
     {
+        // Apply the rotation from the joy head.
+        if (JoyHeadRotate != null)
+        {
+            targetRigidbody.transform.rotation = JoyHeadRotate.transform.rotation;
+        }
+
         if (sourceObject == null || targetRigidbody == null)
         {
             Debug.LogWarning("Source Object or Target Rigidbody not assigned!");
@@ -21,7 +28,7 @@ public class ApplyRotationAsVelocity : MonoBehaviour
         // Ensure the direction vector is flat on the XZ plane to prevent
         // the forward rotation from affecting vertical movement
         direction.y = 0;
-         // Normalize the vector to ensure consistent speed
+        // Normalize the vector to ensure consistent speed
 
         // Get the current velocity of the target Rigidbody
         Vector3 currentVelocity = targetRigidbody.linearVelocity;
@@ -37,10 +44,16 @@ public class ApplyRotationAsVelocity : MonoBehaviour
         // Apply the new velocity to the target object's Rigidbody
         targetRigidbody.linearVelocity = newVelocity;
 
-        // Apply the rotation from the joy head.
-        if (JoyHeadRotate != null)
+        // Update animator parameter based on velocity
+        Vector3 horizontalVelocity = new Vector3(newVelocity.x, 0, newVelocity.z);
+        float speed = horizontalVelocity.magnitude;
+
+        if (animator != null)
         {
-            targetRigidbody.transform.rotation = JoyHeadRotate.transform.rotation;
+            animator.SetFloat("Blend",speed);
         }
+
+        
+        print(speed);
     }
 }
