@@ -1,78 +1,122 @@
 using UnityEngine;
 
-public class ApplyRotationAsVelocity : MonoBehaviour
+public class DualJoystickCharacterController : MonoBehaviour
 {
-    public Transform sourceObject;              // Object that defines movement direction (e.g., player controller)
-    public Rigidbody targetRigidbody;           // Object that moves
-    public float movementSpeed = 10f;           // Movement speed
-    [Tooltip("The maximum speed the character can rotate at")]
-    public float maxAngularVelocity = 180f;
-    [Tooltip("The force applied to accelerate the rotation")]
-    public float torqueStrength = 50f;
-    [Tooltip("The damping to reduce jitter when controller is still")]
-    public float damping = 5f;
-    public Rigidbody JoyHeadRotate;
-    public Animator animator;                   // Optional: animation blend tree
+    [Header("Movement Settings")]
+    public Transform movementJoystickSource;    // Joystick controlling movement direction
+    public float movementSpeed = 10f;
+    public float movementDeadzone = 0.1f;
+    public float movementAccelerationRate = 5f;
+    public float movementDecelerationRate = 5f;
+
+    [Header("Rotation Settings")]
+    public Transform rotationJoystickSource;    // Joystick controlling rotation direction
+    public float rotationSpeed = 180f;           // Max degrees per second rotation
+    public float rotationDeadzone = 0.1f;
+    public float rotationAccelerationRate = 5f;
+    public float rotationDecelerationRate = 5f;
+    private Quaternion initialLocalRotation;
+
+    void Start()
+    {
+        initialLocalRotation = rotationJoystickSource.localRotation;
+    }
+
+
+    [Header("References")]
+    public Rigidbody targetRigidbody;
+    public Animator animator;
+
+    // Internal state
+    private Vector3 currentMoveVelocity = Vector3.zero;
+    private float currentAngularVelocity = 0f; // degrees per second
 
     void FixedUpdate()
     {
-        if (JoyHeadRotate != null && targetRigidbody != null)
+        HandleMovement();
+        HandleRotation();
+        UpdateAnimator();
+    }
+
+    void HandleMovement()
+    {
+        // Get movement input from joystick
+        Vector3 moveDir = movementJoystickSource.forward;
+        moveDir.y = 0f;
+
+        float moveMagnitude = moveDir.magnitude;
+        Vector3 targetVelocity = Vector3.zero;
+
+        if (moveMagnitude >= movementDeadzone)
         {
-            // Get the current and target rotations
-            Quaternion currentRotation = targetRigidbody.rotation;
-            Quaternion targetRotation = JoyHeadRotate.transform.rotation;
-
-            // Calculate the difference in rotation
-            Quaternion rotationDelta = Quaternion.Inverse(currentRotation) * targetRotation;
-            rotationDelta.ToAngleAxis(out float angleInDegrees, out Vector3 rotationAxis);
-
-            // Ensure the rotation axis is normalized
-            //if (rotationAxis == Vector3.zero) return;
-            //rotationAxis.Normalize();
-
-            // Apply torque to rotate the rigidbody
-            targetRigidbody.AddTorque(rotationAxis * angleInDegrees * torqueStrength * Time.fixedDeltaTime);
-
-            // Reduce jitter by applying damping when the controller is not moving
-            targetRigidbody.angularVelocity *= Mathf.Clamp01(1 - damping * Time.fixedDeltaTime);
-
-            // Limit the maximum angular velocity
-            if (targetRigidbody.angularVelocity.magnitude > maxAngularVelocity)
-            {
-                targetRigidbody.angularVelocity = targetRigidbody.angularVelocity.normalized * maxAngularVelocity;
-            }
-            if (sourceObject == null || targetRigidbody == null)
-            {
-                Debug.LogWarning("Source Object or Target Rigidbody not assigned!");
-                return;
-            }
-
-            // Use the source object's forward direction (rotates with player/controller)
-            Vector3 direction = sourceObject.forward;
-            direction.y = 0f; // Flatten to XZ plane
-                              //direction.Normalize();
-
-            // Preserve vertical movement (jumping, gravity, etc.)
-            Vector3 currentVelocity = targetRigidbody.linearVelocity;
-
-            // Apply new velocity in forward direction
-            Vector3 newVelocity = new Vector3(
-                direction.x * movementSpeed,
-                currentVelocity.y,
-                direction.z * movementSpeed
-            );
-
-            targetRigidbody.linearVelocity = newVelocity;
-
-            // Debug: Draw the direction ray in Scene view
-            //Debug.DrawRay(sourceObject.position, direction * 2f, Color.green);
-
-            // Optional: Update animator blend parameter
-            if (animator != null)
-            {
-                float speed = new Vector3(newVelocity.x, 0, newVelocity.z).magnitude;
-                animator.SetFloat("Blend", speed);
-            }
+            targetVelocity = moveDir * movementSpeed;
         }
+
+        float moveRate = (moveMagnitude >= movementDeadzone) ? movementAccelerationRate : movementDecelerationRate;
+        currentMoveVelocity = Vector3.Lerp(currentMoveVelocity, targetVelocity, Time.fixedDeltaTime * moveRate);
+
+        Vector3 currentVel = targetRigidbody.linearVelocity;
+        targetRigidbody.linearVelocity = new Vector3(
+            currentMoveVelocity.x,
+            currentVel.y,       // preserve vertical velocity (gravity, jump, etc.)
+            currentMoveVelocity.z
+        );
+    }
+
+    void HandleRotation()
+    {
+        // Get the joystick rotation relative to the character root
+        Quaternion relativeRotation = Quaternion.Inverse(transform.rotation) * rotationJoystickSource.rotation;
+        
+        Vector3 relativeEuler = relativeRotation.eulerAngles;
+
+        // Convert Euler angles from 0-360 to -180 to 180 for the X axis
+        float tilt = relativeEuler.z;
+        if (tilt > 180f)
+            tilt -= 360f;
+
+        // Clamp the tilt to your max expected joystick angle (±90 degrees)
+        float maxTiltAngle = 90f;
+        float clampedTilt = Mathf.Clamp(tilt, -maxTiltAngle, maxTiltAngle);
+
+        // Normalize to -1 to 1
+        float inputX = clampedTilt / maxTiltAngle;
+
+        // Deadzone check
+        if (Mathf.Abs(inputX) < rotationDeadzone)
+            inputX = 0f;
+
+        // Calculate target angular velocity (degrees per second)
+        float targetAngularVelocity = inputX * rotationSpeed;
+
+        // Smoothly move current angular velocity towards target
+        float rotRate = (Mathf.Abs(inputX) >= rotationDeadzone) ? rotationAccelerationRate : rotationDecelerationRate;
+        currentAngularVelocity = Mathf.MoveTowards(currentAngularVelocity, targetAngularVelocity, rotRate * rotationSpeed * Time.fixedDeltaTime);
+
+        // Apply angular velocity on Y axis (converted to radians)
+        targetRigidbody.angularVelocity = new Vector3(0f, currentAngularVelocity * Mathf.Deg2Rad, 0f);
+    }
+
+
+    void UpdateAnimator()
+    {
+        if (animator == null)
+            return;
+
+        // Calculate movement speed and direction for animator blend
+        float moveSpeed = currentMoveVelocity.magnitude;
+        float blendValue = 0f;
+
+        if (moveSpeed > 0.01f)
+        {
+            Vector3 velocityDir = currentMoveVelocity.normalized;
+            float forwardDot = Vector3.Dot(transform.forward, velocityDir);
+            blendValue = moveSpeed * Mathf.Sign(forwardDot);
+        }
+
+        animator.SetFloat("Blend", blendValue);
+
+        // Optional: You can add rotation speed parameter to animator here if desired
+        // animator.SetFloat("RotationSpeed", Mathf.Abs(currentAngularVelocity) / rotationSpeed);
     }
 }
