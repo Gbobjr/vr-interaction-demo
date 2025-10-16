@@ -71,7 +71,7 @@ public class DualJoystickCharacterController : MonoBehaviour
         Vector3 relativeEuler = relativeRotation.eulerAngles;
 
         // Convert Euler angles from 0-360 to -180 to 180 for the X axis
-        float tilt = relativeEuler.z;
+        float tilt = relativeEuler.y;
         if (tilt > 180f)
             tilt -= 360f;
 

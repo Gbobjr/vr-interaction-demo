@@ -22,6 +22,144 @@ MonoBehaviour:
   gain:
     m_OverrideState: 1
     m_Value: {x: 1, y: 1, z: 1, w: 0}
+--- !u!114 &-8816678668764105942
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d6e1e26e67e084439ccd405f01baf98, type: 3}
+  m_Name: RaindropFX_URP
+  m_EditorClassIdentifier: RaindropFX.URP::RaindropFX.RaindropFX_URP
+  active: 1
+  enable:
+    m_OverrideState: 1
+    m_Value: 0
+  fadeout_fadein_switch:
+    m_OverrideState: 1
+    m_Value: 0
+  fastMode:
+    m_OverrideState: 1
+    m_Value: 0
+  fadeSpeed:
+    m_OverrideState: 1
+    m_Value: 0.02
+  refreshRate:
+    m_OverrideState: 1
+    m_Value: 1
+  _raindropTex_alpha:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  forceRainTextureSize:
+    m_OverrideState: 1
+    m_Value: 1
+  calcRainTextureSize:
+    m_OverrideState: 1
+    m_Value: {x: 800, y: 450}
+  downSampling:
+    m_OverrideState: 1
+    m_Value: 0.5
+  _rainMask_grayscale:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  pixelization:
+    m_OverrideState: 1
+    m_Value: 0
+  pixResolution:
+    m_OverrideState: 1
+    m_Value: 1
+  wipeEffect:
+    m_OverrideState: 1
+    m_Value: 0
+  foggingSpeed:
+    m_OverrideState: 1
+    m_Value: 0.98
+  calcTimeStep:
+    m_OverrideState: 1
+    m_Value: 0.1
+  useWind:
+    m_OverrideState: 1
+    m_Value: 0
+  radialWind:
+    m_OverrideState: 1
+    m_Value: 0
+  windTurbulence:
+    m_OverrideState: 1
+    m_Value: 0.1
+  windTurbScale:
+    m_OverrideState: 1
+    m_Value: 1
+  wind:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
+  gravity:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: -9.8}
+  friction:
+    m_OverrideState: 1
+    m_Value: 0.8
+  generateTrail:
+    m_OverrideState: 1
+    m_Value: 1
+  maxStaticRaindropNumber:
+    m_OverrideState: 1
+    m_Value: 5000
+  maxDynamicRaindropNumber:
+    m_OverrideState: 1
+    m_Value: 10
+  raindropSizeRange:
+    m_OverrideState: 1
+    m_Value: {x: 0.1, y: 0.25}
+  tintColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  tintWeight:
+    m_OverrideState: 1
+    m_Value: 1
+  fusion:
+    m_OverrideState: 1
+    m_Value: 1
+  distortion:
+    m_OverrideState: 1
+    m_Value: 0.6
+  _inBlack:
+    m_OverrideState: 1
+    m_Value: 55
+  _inWhite:
+    m_OverrideState: 1
+    m_Value: 180
+  _outWhite:
+    m_OverrideState: 1
+    m_Value: 160
+  _outBlack:
+    m_OverrideState: 1
+    m_Value: 5
+  useFog:
+    m_OverrideState: 1
+    m_Value: 0
+  fogTint:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  fogIntensity:
+    m_OverrideState: 1
+    m_Value: 0.5
+  fogIteration:
+    m_OverrideState: 1
+    m_Value: 2
+  dropletBlur:
+    m_OverrideState: 1
+    m_Value: 0
+  _focalize:
+    m_OverrideState: 1
+    m_Value: 1
+  blurIteration:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &-8270506406425502121
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -299,6 +437,86 @@ MonoBehaviour:
   cropToFit:
     m_OverrideState: 1
     m_Value: 1
+--- !u!114 &-1980421993872078769
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2ba6179f864e4e48924fb8844220f79, type: 3}
+  m_Name: RaindropFX_GPU
+  m_EditorClassIdentifier: RaindropFX.URP::RaindropFX.RaindropFX_GPU
+  active: 1
+  enable:
+    m_OverrideState: 1
+    m_Value: 1
+  fadeout_fadein_switch:
+    m_OverrideState: 1
+    m_Value: 0
+  _noiseTex:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  refreshRate:
+    m_OverrideState: 1
+    m_Value: 10
+  DownSampling:
+    m_OverrideState: 1
+    m_Value: 1
+  StaticSpawnRate:
+    m_OverrideState: 1
+    m_Value: 5
+  DynamicSpawnRate:
+    m_OverrideState: 1
+    m_Value: 2
+  staticRaindropSize:
+    m_OverrideState: 1
+    m_Value: 1
+  dynamicRaindropSize:
+    m_OverrideState: 1
+    m_Value: 1
+  dynamicLifetime:
+    m_OverrideState: 1
+    m_Value: 1
+  staticLifetime:
+    m_OverrideState: 1
+    m_Value: 1
+  sharpenEdge:
+    m_OverrideState: 1
+    m_Value: 0.275
+  fusion:
+    m_OverrideState: 1
+    m_Value: 2
+  gravity:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: -9.8}
+  wind:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
+  windTurbulence:
+    m_OverrideState: 1
+    m_Value: 1
+  distortion:
+    m_OverrideState: 1
+    m_Value: 1
+  _inBlack:
+    m_OverrideState: 1
+    m_Value: 0
+  _inWhite:
+    m_OverrideState: 1
+    m_Value: 10
+  _outWhite:
+    m_OverrideState: 1
+    m_Value: 150
+  _outBlack:
+    m_OverrideState: 1
+    m_Value: 5
+  debug:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &-1410297666881709256
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -465,6 +683,8 @@ MonoBehaviour:
   - {fileID: -6288072647309666549}
   - {fileID: 7518938298396184218}
   - {fileID: -1410297666881709256}
+  - {fileID: -8816678668764105942}
+  - {fileID: -1980421993872078769}
 --- !u!114 &853819529557874667
 MonoBehaviour:
   m_ObjectHideFlags: 3
